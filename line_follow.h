@@ -25,17 +25,17 @@
 #define DEAD_ZONE_MAX 0.1
 #define CONTROLLED_ZONE_MAX 0.5
 
-#define WHEEL_SPEED_CONTROL_RATIO 1.75
+#define WHEEL_SPEED_CONTROL_RATIO 1
 
-// PID tuning
+// PID tuning for controlled zone
 #define Kp_controlled 90.0
 #define Ki_controlled 0.0
 #define Kd_controlled 25.0
 
-// PID tuning
-#define Kp_balistic 230.0
+// PID tuning for ballistic zone
+#define Kp_balistic 260.0
 #define Ki_balistic 0.0
-#define Kd_balistic 40.0
+#define Kd_balistic 50.0
 
 static double current_error = 0;
 static double error_integral = 0;
