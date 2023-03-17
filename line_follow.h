@@ -20,11 +20,22 @@
 #define LEFT_QRD_WEIGHT 1.0
 #define AVERAGE_WEIGHT 2.0
 
+#define motor_base_speed 150.0 // rev/min
+
+#define DEAD_ZONE_MAX 0.1
+#define CONTROLLED_ZONE_MAX 0.5
+
+#define WHEEL_SPEED_CONTROL_RATIO 1.75
+
 // PID tuning
-#define Kp 180.0
-#define Ki 0.0
-#define Kd 40.0
-#define motor_base_speed 70.0 // rev/min
+#define Kp_controlled 90.0
+#define Ki_controlled 0.0
+#define Kd_controlled 25.0
+
+// PID tuning
+#define Kp_balistic 230.0
+#define Ki_balistic 0.0
+#define Kd_balistic 40.0
 
 static double current_error = 0;
 static double error_integral = 0;
@@ -40,10 +51,18 @@ void update_error(void) {
 }
 
 double compute_pid(void) {
+    if (fabs(current_error) < DEAD_ZONE_MAX) {
+        return 0;
+    }
     double P = current_error;
     double I = error_integral + current_error;
     double D = current_error - last_error;
-    return (Kp*P) + (Ki*I) + (Kd*D);
+    if (fabs(current_error) < CONTROLLED_ZONE_MAX) {
+        return (Kp_controlled*P) + (Ki_controlled*I) + (Kd_controlled*D);
+    }
+    else {
+        return (Kp_balistic*P) + (Ki_balistic*I) + (Kd_balistic*D);
+    }
 }
 
 void line_follow(void) {
@@ -54,10 +73,10 @@ void line_follow(void) {
     int right_wheel_speed = motor_base_speed;
     if (pid_value > 0) {
         left_wheel_speed = left_wheel_speed + (int)pid_value;
-        right_wheel_speed = right_wheel_speed - (int)(pid_value/1.75);
+        right_wheel_speed = right_wheel_speed - (int)(pid_value/WHEEL_SPEED_CONTROL_RATIO);
     }
     else {
-        left_wheel_speed = left_wheel_speed + (int)(pid_value/1.75);
+        left_wheel_speed = left_wheel_speed + (int)(pid_value/WHEEL_SPEED_CONTROL_RATIO);
         right_wheel_speed = right_wheel_speed - (int)pid_value;
     }
     turn_motors_at_speed(left_wheel_speed, right_wheel_speed);
