@@ -58,7 +58,8 @@ int main(void) {
                 break;
             case (LINE_FOLLOW):
                 line_follow();
-                current_task = detect_task();
+                detect_task();
+//                current_task = detect_task();
                 break;  
             case (SAMPLE_COLLECTION):
                 collect_sample();
