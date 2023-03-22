@@ -70,8 +70,8 @@ void set_postscaling(void) {
 #define task_qrd ADC1BUF14 // RBA3
 #define forwards_ir_range_sensor _RB7 // pin 11
 #define left_ir_range_sensor _RB8 // pin 12
-#define servo_pwm_period OC1R
-#define servo_pwm_duty_cycle OC1RS
+#define servo_pwm_period OC1RS
+#define servo_pwm_duty_cycle OC1R
 //// TODO: Change to correct pin for ball QRD
 //#define ball_qrd ADC1BUF13 // RB15
     
