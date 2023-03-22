@@ -34,9 +34,14 @@ void update_error(void) {
     int right_qrd_value = read_right_qrd();
     int center_qrd_value = read_center_qrd();
     int left_qrd_value = read_left_qrd();
-    current_error = (right_qrd_value*RIGHT_QRD_WEIGHT + center_qrd_value*CENTER_QRD_WEIGHT + left_qrd_value*LEFT_QRD_WEIGHT) /
-		((double)(right_qrd_value + center_qrd_value + left_qrd_value));
-    current_error = current_error - AVERAGE_WEIGHT;
+    if (right_qrd_value <= QRD_THRESHOLD && center_qrd_value <= QRD_THRESHOLD && left_qrd_value <= QRD_THRESHOLD) {
+        current_error = last_error;
+    }
+    else {
+        current_error = (right_qrd_value*RIGHT_QRD_WEIGHT + center_qrd_value*CENTER_QRD_WEIGHT + left_qrd_value*LEFT_QRD_WEIGHT) /
+            ((double)(right_qrd_value + center_qrd_value + left_qrd_value));
+        current_error = current_error - AVERAGE_WEIGHT;
+    }
 }
 
 double compute_pid(void) {
