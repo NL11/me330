@@ -5,7 +5,8 @@
  * Created on March 2023
  */
 
-// File that includes the logic for line following using a PID controller
+// File that includes the logic for line following using a PID controller and 
+// Zoning to create non-linearity
 
 #ifndef LINE_FOLLOW_H
 #define	LINE_FOLLOW_H
