@@ -61,14 +61,14 @@ int main(void) {
                 current_task = detect_task();
                 break;  
             case (SAMPLE_COLLECTION):
-//                collect_sample();
+                collect_sample();
                 set_line_follow_speed(150);
                 current_task = LINE_FOLLOW;
                 break;
             case (SAMPLE_RETURN):
                 move_linear_at_velocity(0);
                 wait(2);
-//                return_sample();
+                return_sample();
                 set_line_follow_speed(150);
                 current_task = LINE_FOLLOW;
                 break;
