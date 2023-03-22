@@ -34,12 +34,14 @@ int main(void) {
     config_motors();
     config_qrds();
     config_ir_range_finders();
+    configure_servo();
     // Set initial task here!
     enum task_type current_task = LINE_FOLLOW;
     // Wait for 2 seconds before starting to allow the base to turn on 
-    // properly and allow the user to move  away from the base after turning on
-    wait(2); 
+    // properly and allow the user to move away from the base after turning on
     move_linear_at_velocity(0); 
+    set_door_servo(40);
+    wait(2); 
     
     while(1){    
         update_distance_traveled();
@@ -53,34 +55,26 @@ int main(void) {
                 // Code to move to line then turn to start motion
                 move_linear_to_position(0.5, 0.4, true); // Two tiles
                 pivot_to_angle(180, -105, true);  // 90 deg turn counterclockwise
-                set_line_follow_speed(150);
                 current_task = LINE_FOLLOW;
                 break;
             case (LINE_FOLLOW):
                 line_follow();
-                detect_task();
-//                current_task = detect_task();
+                current_task = detect_task();
                 break;  
             case (SAMPLE_COLLECTION):
                 collect_sample();
-                set_line_follow_speed(150);
                 current_task = LINE_FOLLOW;
                 break;
             case (SAMPLE_RETURN):
                 move_linear_at_velocity(0);
                 wait(2);
                 return_sample();
-                set_line_follow_speed(150);
                 current_task = LINE_FOLLOW;
                 break;
             case (CANYON_NAVIGATION):
                 current_task = navigate_canyon();
-                if (current_task == LINE_FOLLOW) {
-                    set_line_follow_speed(150);
-                }
                 break;
             case(EQUIPMENT_SERVICING):
-                set_line_follow_speed(-150);
                 current_task = LINE_FOLLOW;
                 break;
             case(DATA_TRANSMISSION):
@@ -89,6 +83,9 @@ int main(void) {
                 current_task = IDLE;
         }
     }
+    
+    move_linear_at_velocity(0); 
+    set_door_servo(40);
     
     return 0;
 }
