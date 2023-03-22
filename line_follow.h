@@ -20,7 +20,10 @@
 #define LEFT_QRD_WEIGHT 1.0
 #define AVERAGE_WEIGHT 2.0
 
-#define motor_base_speed 150.0 // rev/min
+static double motor_base_speed = 150;
+void set_line_follow_speed(double speed) {
+    motor_base_speed = speed;
+}
 
 #define DEAD_ZONE_MAX 0.1
 #define CONTROLLED_ZONE_MAX 0.5

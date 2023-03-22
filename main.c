@@ -53,6 +53,7 @@ int main(void) {
                 // Code to move to line then turn to start motion
                 move_linear_to_position(0.5, 0.4, true); // Two tiles
                 pivot_to_angle(180, -105, true);  // 90 deg turn counterclockwise
+                set_line_follow_speed(150);
                 current_task = LINE_FOLLOW;
                 break;
             case (LINE_FOLLOW):
@@ -61,18 +62,25 @@ int main(void) {
                 break;  
             case (SAMPLE_COLLECTION):
 //                collect_sample();
+                set_line_follow_speed(150);
                 current_task = LINE_FOLLOW;
                 break;
             case (SAMPLE_RETURN):
                 move_linear_at_velocity(0);
                 wait(2);
 //                return_sample();
+                set_line_follow_speed(150);
                 current_task = LINE_FOLLOW;
                 break;
             case (CANYON_NAVIGATION):
                 current_task = navigate_canyon();
+                if (current_task == LINE_FOLLOW) {
+                    set_line_follow_speed(150);
+                }
                 break;
             case(EQUIPMENT_SERVICING):
+                set_line_follow_speed(-150);
+                current_task = LINE_FOLLOW;
                 break;
             case(DATA_TRANSMISSION):
                 break;
