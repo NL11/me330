@@ -21,7 +21,7 @@
 #define LEFT_QRD_WEIGHT 1.0
 #define AVERAGE_WEIGHT 2.0
 
-#define BASE_DEFAULT_SPEED 90
+#define BASE_DEFAULT_SPEED 75
 
 static double motor_base_speed = BASE_DEFAULT_SPEED;
 static double previous_motor_base_speed = BASE_DEFAULT_SPEED;
@@ -30,21 +30,21 @@ void set_line_follow_speed(double speed) {
     previous_motor_base_speed = speed;
 }
 
-#define DEAD_ZONE_MAX 0.005
-#define CONTROLLED_ZONE_MAX 0.25
-#define WHEEL_SPEED_CONTROL_RATIO 1.40
-#define WHEEL_SPEED_CONTROL_RATIO_WHEN_BALISTIC 1.25
-#define MOTOR_SLOWDOWN_WHEN_BALISTIC 1.35
+#define DEAD_ZONE_MAX 0.000 // 0.005
+#define CONTROLLED_ZONE_MAX 0.30
+#define WHEEL_SPEED_CONTROL_RATIO 1.85
+#define WHEEL_SPEED_CONTROL_RATIO_WHEN_BALISTIC 1.85
+#define MOTOR_SLOWDOWN_WHEN_BALISTIC 1.45
 
 // PID tuning for controlled zone
-#define Kp_controlled 290.0
+#define Kp_controlled 195.0
 #define Ki_controlled 0.0
-#define Kd_controlled 75.0
+#define Kd_controlled 165.0
 
 // PID tuning for ballistic zone
-#define Kp_balistic 400.0
+#define Kp_balistic 245.0
 #define Ki_balistic 0.0
-#define Kd_balistic 90.0
+#define Kd_balistic 185.0
 
 static double current_error = 0;
 static double error_integral = 0;
