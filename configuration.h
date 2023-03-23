@@ -68,12 +68,11 @@ void set_postscaling(void) {
 #define left_qrd ADC1BUF9 // RB15
 #define center_qrd ADC1BUF11 // RB13
 #define task_qrd ADC1BUF14 // RBA3
-//// TODO: Change to correct pin for ball QRD
-//#define ball_qrd ADC1BUF13 // RB15
-//// TODO: Change to real pin
 #define forwards_ir_range_sensor _RB7 // pin 11
-//// TODO: Change to real pin
 #define left_ir_range_sensor _RB8 // pin 12
+#define servo_pwm_period OC1RS
+#define servo_pwm_duty_cycle OC1R
+#define ball_qrd ADC1BUF15 // RB4
     
 enum task_type {TEST, IDLE, STARTUP, LINE_FOLLOW, SAMPLE_COLLECTION, SAMPLE_RETURN, CANYON_NAVIGATION, EQUIPMENT_SERVICING, DATA_TRANSMISSION};
     

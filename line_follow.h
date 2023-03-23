@@ -5,7 +5,8 @@
  * Created on March 2023
  */
 
-// File that includes the logic for line following using a PID controller
+// File that includes the logic for line following using a PID controller and 
+// Zoning to create non-linearity
 
 #ifndef LINE_FOLLOW_H
 #define	LINE_FOLLOW_H
@@ -20,11 +21,30 @@
 #define LEFT_QRD_WEIGHT 1.0
 #define AVERAGE_WEIGHT 2.0
 
-// PID tuning
-#define Kp 180.0
-#define Ki 0.0
-#define Kd 40.0
-#define motor_base_speed 70.0 // rev/min
+#define BASE_DEFAULT_SPEED 75
+
+static double motor_base_speed = BASE_DEFAULT_SPEED;
+static double previous_motor_base_speed = BASE_DEFAULT_SPEED;
+void set_line_follow_speed(double speed) {
+    motor_base_speed = speed;
+    previous_motor_base_speed = speed;
+}
+
+#define DEAD_ZONE_MAX 0.000 // 0.005
+#define CONTROLLED_ZONE_MAX 0.30
+#define WHEEL_SPEED_CONTROL_RATIO 1.85
+#define WHEEL_SPEED_CONTROL_RATIO_WHEN_BALISTIC 1.85
+#define MOTOR_SLOWDOWN_WHEN_BALISTIC 1.45
+
+// PID tuning for controlled zone
+#define Kp_controlled 195.0
+#define Ki_controlled 0.0
+#define Kd_controlled 165.0
+
+// PID tuning for ballistic zone
+#define Kp_balistic 245.0
+#define Ki_balistic 0.0
+#define Kd_balistic 185.0
 
 static double current_error = 0;
 static double error_integral = 0;
@@ -45,10 +65,31 @@ void update_error(void) {
 }
 
 double compute_pid(void) {
+    if (fabs(current_error) < DEAD_ZONE_MAX) {
+        return 0;
+    }
     double P = current_error;
     double I = error_integral + current_error;
     double D = current_error - last_error;
-    return (Kp*P) + (Ki*I) + (Kd*D);
+    if (fabs(current_error) <= CONTROLLED_ZONE_MAX) {
+        if (previous_motor_base_speed != motor_base_speed) {
+            motor_base_speed = previous_motor_base_speed;
+        }
+        return (Kp_controlled*P) + (Ki_controlled*I) + (Kd_controlled*D);
+    }
+    else if (fabs(current_error) > DEAD_ZONE_MAX) {
+        if (previous_motor_base_speed == motor_base_speed) {
+            previous_motor_base_speed = motor_base_speed;
+            motor_base_speed = motor_base_speed/MOTOR_SLOWDOWN_WHEN_BALISTIC;
+        }
+        return (Kp_balistic*P) + (Ki_balistic*I) + (Kd_balistic*D);
+    }
+    else {
+        if (previous_motor_base_speed != motor_base_speed) {
+            motor_base_speed = previous_motor_base_speed;
+        }
+        return 0;
+    }
 }
 
 void line_follow(void) {
@@ -57,13 +98,45 @@ void line_follow(void) {
     last_error = current_error;
     int left_wheel_speed = motor_base_speed;
     int right_wheel_speed = motor_base_speed;
-    if (pid_value > 0) {
-        left_wheel_speed = left_wheel_speed + (int)pid_value;
-        right_wheel_speed = right_wheel_speed - (int)(pid_value/1.75);
+    if (motor_base_speed >= 0) {
+        if (pid_value > 0) {
+            left_wheel_speed = left_wheel_speed + (int)pid_value;
+            if (previous_motor_base_speed == motor_base_speed) {
+                right_wheel_speed = right_wheel_speed - (int)(pid_value/WHEEL_SPEED_CONTROL_RATIO);
+            }
+            else {
+                right_wheel_speed = right_wheel_speed - (int)(pid_value/WHEEL_SPEED_CONTROL_RATIO_WHEN_BALISTIC);
+            }
+        }
+        else {
+            if (previous_motor_base_speed == motor_base_speed) {
+                left_wheel_speed = left_wheel_speed + (int)(pid_value/WHEEL_SPEED_CONTROL_RATIO);
+            }
+            else {
+                left_wheel_speed = left_wheel_speed + (int)(pid_value/WHEEL_SPEED_CONTROL_RATIO_WHEN_BALISTIC);
+            }
+            right_wheel_speed = right_wheel_speed - (int)pid_value;
+        }
     }
     else {
-        left_wheel_speed = left_wheel_speed + (int)(pid_value/1.75);
-        right_wheel_speed = right_wheel_speed - (int)pid_value;
+        if (pid_value > 0) {
+            left_wheel_speed = left_wheel_speed - (int)pid_value;
+            if (previous_motor_base_speed == motor_base_speed) {
+                right_wheel_speed = right_wheel_speed +(int)(pid_value/WHEEL_SPEED_CONTROL_RATIO);
+            }
+            else {
+                right_wheel_speed = right_wheel_speed + (int)(pid_value/WHEEL_SPEED_CONTROL_RATIO_WHEN_BALISTIC);
+            }
+        }
+        else {
+            if (previous_motor_base_speed == motor_base_speed) {
+                left_wheel_speed = left_wheel_speed - (int)(pid_value/WHEEL_SPEED_CONTROL_RATIO);
+            }
+            else {
+                left_wheel_speed = left_wheel_speed- (int)(pid_value/WHEEL_SPEED_CONTROL_RATIO_WHEN_BALISTIC);
+            }
+            right_wheel_speed = right_wheel_speed + (int)pid_value;
+        }
     }
     turn_motors_at_speed(left_wheel_speed, right_wheel_speed);
 }

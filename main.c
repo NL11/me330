@@ -29,17 +29,18 @@
 int main(void) {
     
     set_postscaling();
-    
     initialize_registers();
     config_motors();
+    move_linear_at_velocity(0); 
     config_qrds();
     config_ir_range_finders();
+    configure_servo();
+    set_door_servo(40);
     // Set initial task here!
     enum task_type current_task = LINE_FOLLOW;
     // Wait for 2 seconds before starting to allow the base to turn on 
-    // properly and allow the user to move  away from the base after turning on
+    // properly and allow the user to move away from the base after turning on
     wait(2); 
-    move_linear_at_velocity(0); 
     
     while(1){    
         update_distance_traveled();
@@ -60,19 +61,18 @@ int main(void) {
                 current_task = detect_task();
                 break;  
             case (SAMPLE_COLLECTION):
-//                collect_sample();
+                collect_sample();
                 current_task = LINE_FOLLOW;
                 break;
             case (SAMPLE_RETURN):
-                move_linear_at_velocity(0);
-                wait(2);
-//                return_sample();
+                return_sample();
                 current_task = LINE_FOLLOW;
                 break;
             case (CANYON_NAVIGATION):
                 current_task = navigate_canyon();
                 break;
             case(EQUIPMENT_SERVICING):
+                current_task = LINE_FOLLOW;
                 break;
             case(DATA_TRANSMISSION):
                 break;
@@ -80,6 +80,9 @@ int main(void) {
                 current_task = IDLE;
         }
     }
+    
+    move_linear_at_velocity(0); 
+    set_door_servo(40);
     
     return 0;
 }

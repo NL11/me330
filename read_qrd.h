@@ -17,11 +17,13 @@
 
 // Used for task detection and ball color detection
 #define QRD_THRESHOLD 3000
+#define BALL_QRD_THRESHOLD 3500
 #define black true
 #define white false
 #define RIGHT_QRD_VALUE_OFFSET -485
 
 void config_qrds(void) {
+    // Line QRDS
     _TRISB14 = 1;    // pin 17 AN10
     _ANSB14 = 1;     // pin 17 AN10
     
@@ -31,8 +33,13 @@ void config_qrds(void) {
     _TRISB13 = 1;    // pin 16 AN11
     _ANSB13 = 1;     // pin 16 AN11
    
+    // Task QRD
     _TRISA3 = 1;    // pin 8 AN14
     _ANSA3 = 1;     // pin 8 AN14
+    
+    // Ball QRD
+    _TRISB4 = 1;    // pin 8 AN14
+    _ANSB4 = 1;     // pin 8 AN14
     
     enable_ad_auto_sample = 0;    // Disable A/D module during configuration
     
@@ -47,7 +54,7 @@ void config_qrds(void) {
     _NVCFG = 0;   // use VSS as negative reference
     _BUFREGEN = 1;// store results in buffer corresponding to channel number
     _CSCNA = 1;   // scanning mode
-    _SMPI = 3;    // begin new sampling sequence after every sample
+    _SMPI = 4;    // begin new sampling sequence after every sample
     // number of pins you are sampling since this determines that the buffer 
     // Resets its scan after N-1 number of pins scanned
     _ALTS = 0;    // sample MUXA only
@@ -62,6 +69,7 @@ void config_qrds(void) {
     _CSS10 = 1; // AN10
     _CSS11 = 1; // AN11
     _CSS14 = 1; // AN14
+    _CSS15 = 1; // AN15
 
     enable_ad_auto_sample = 1;    // enable module
 }
@@ -95,9 +103,9 @@ bool read_task_qrd(void) {
 }
 
 bool read_ball_qrd(void) {
-//    if (ball_qrd >= QRD_THRESHOLD) {
-//        return black;
-//    }
+    if (ball_qrd >= BALL_QRD_THRESHOLD) {
+        return black;
+    }
     return white;
 }
 
