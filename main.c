@@ -63,16 +63,20 @@ int main(void) {
             case (SAMPLE_COLLECTION):
                 collect_sample();
                 current_task = LINE_FOLLOW;
+                reset_line_follow_errors();
                 break;
             case (SAMPLE_RETURN):
                 return_sample();
                 current_task = LINE_FOLLOW;
+                reset_line_follow_errors();
                 break;
             case (CANYON_NAVIGATION):
                 current_task = navigate_canyon();
+                reset_line_follow_errors();
                 break;
             case(EQUIPMENT_SERVICING):
                 current_task = LINE_FOLLOW;
+                reset_line_follow_errors();
                 break;
             case(DATA_TRANSMISSION):
                 break;

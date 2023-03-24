@@ -49,6 +49,12 @@ void set_line_follow_speed(double speed) {
 static double current_error = 0;
 static double error_integral = 0;
 static double last_error = 0;
+void reset_line_follow_errors() {
+    current_error = 0;
+    error_integral = 0;
+    last_error = 0;
+}
+
 // compute weighted average of sensor readings
 void update_error(void) {
     int right_qrd_value = read_right_qrd();

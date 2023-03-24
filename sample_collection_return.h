@@ -43,9 +43,8 @@ void return_sample(void) {
     move_linear_at_velocity(0);
     wait(0.15);
     
-//    move_linear_to_position(0.5, -0.075, true); // 0.5 tiles
     bool ball_color = read_ball_qrd();
-    if (ball_color == black) {
+    if (ball_color == white) {
         pivot_to_angle(150, 50, true);  // 45 deg turn clockwise
         
         move_linear_at_velocity(0);
