@@ -23,16 +23,16 @@
 #include "eqipment_servicing.h"
 
 // 8 MHz oscilator with postscaling
-#pragma config FNOSC = FRCDIV
+#pragma config FNOSC = FRCDIV // 8 MHz
 // Allow pin 1 to be used and disable MCLR
-#pragma config MCLRE = OFF
+#pragma config MCLRE = OFF // 0
 // Disable pin 8 clock output
 #pragma config OSCIOFNC = OFF
 // Setup for pins 9 and 10 by disabling secondary oscillator peripheral
 #pragma config SOSCSRC = DIG
 // Disable watchdog
-#pragma config FWDTEN = OFF
-#pragma config WINDIS = OFF
+#pragma config FWDTEN = OFF // 0
+#pragma config WINDIS = OFF // 0
 
 int main(void) {
     
