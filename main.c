@@ -18,9 +18,14 @@
 #include "canyon_navigation.h"
 #include "read_qrd.h"
 #include "read_ir_range_sensors.h"
+#include "set_laser.h"
+#include "satillite_transmission.h"
+#include "eqipment_servicing.h"
 
 // 8 MHz oscilator with postscaling
 #pragma config FNOSC = FRCDIV
+// Allow pin 1 to be used
+//#pragma config MCLRE = OFF
 // Disable pin 8 clock output
 #pragma config OSCIOFNC = OFF
 // Setup for pins 9 and 10
@@ -36,14 +41,15 @@ int main(void) {
     config_ir_range_finders();
     configure_servo();
     set_door_servo(40);
+    config_laser();
     // Set initial task here!
     enum task_type current_task = LINE_FOLLOW;
     // Wait for 2 seconds before starting to allow the base to turn on 
     // properly and allow the user to move away from the base after turning on
     wait(2); 
     
+    unsigned int interations_count = 0;
     while(1){    
-        update_distance_traveled();
         switch(current_task) {
             case (TEST) :
                 // Put code in here that you want to test!
@@ -75,10 +81,25 @@ int main(void) {
                 reset_line_follow_errors();
                 break;
             case(EQUIPMENT_SERVICING):
+                laser_on();
+                service_equipment();
+                laser_off();
                 current_task = LINE_FOLLOW;
                 reset_line_follow_errors();
                 break;
             case(DATA_TRANSMISSION):
+                interations_count++;
+                if (interations_count >= 5000) {
+                    move_linear_at_velocity(0);
+                    transmit_to_satilite();
+                    current_task = IDLE;
+                }
+                else if (interations_count >= 400) {
+                    move_linear_at_velocity(0.40);
+                }
+                else {
+                    line_follow();
+                }
                 break;
             default:
                 current_task = IDLE;

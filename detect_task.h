@@ -13,6 +13,7 @@
 #include "configuration.h"
 #include "read_qrd.h"
 #include "robot_motion.h"
+#include "read_ir_range_sensors.h"
 
 // Weights of sensors
 #define MIN_READINGS_FOR_TASK_LINE_DETECTED 5 // readings
@@ -117,38 +118,19 @@ enum task_type detect_task_lines() {
     return LINE_FOLLOW;
 }
 
-enum task_type detect_equipment_servicing(void) {
-    // TODO: check IR sensor, code is very similar to read_qrd
-    return LINE_FOLLOW;
-}
-
-static int num_tiles_traveled = 0;
-void update_distance_traveled(void) {
-    // TODO: Code this function
-    // Canyon = 6 tiles
-    // Sample collection = 1 tile
-    // Sample return = 1 tile but maybe only 1/2 traveled
-    // Equipment servicing = 1 tile
-    // Other tiles = 12 tiles
-    // Total = 22 tiles
-}
 
 enum task_type detect_data_transmission(void) {
-    if (num_tiles_traveled == 22) {
-        return DATA_TRANSMISSION;
-    }
     return LINE_FOLLOW;
 }
 
 enum task_type detect_task() {
+    if (check_equipment_servicing()) {
+        return EQUIPMENT_SERVICING;
+    }
     enum task_type new_state = detect_task_lines();
-//    if (new_state != LINE_FOLLOW) {
-//        return new_state;
-//    }
-//    new_state = detect_equipment_servicing();
-//    if (new_state != LINE_FOLLOW) {
-//        return new_state;
-//    }
+    if (new_state != LINE_FOLLOW) {
+        return new_state;
+    }
 //    new_state = detect_data_transmission();
     return new_state;
 }

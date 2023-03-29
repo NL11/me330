@@ -15,6 +15,8 @@
 void config_ir_range_finders(void) {
     _TRISB8 = 1;    // pin 12
     _TRISB7 = 1;    // pin 11
+    _TRISA4 = 1;    // pin 10
+    _TRISB12 = 1;    // pin 15
 }
 
 bool check_forwards_obstacle(void) {
@@ -30,6 +32,21 @@ bool check_left_obstacle(void) {
     }
     return false;
 }
+
+bool check_satallite_laser(void) {
+    if (satallite_ir_sensor == 0) {
+        return true;
+    }
+    return false;
+}
+
+bool check_equipment_servicing(void) {
+    if (equipment_servicing_ir_sensor == 0) {
+        return true;
+    }
+    return false;
+}
+
 
 #endif	/* READ_IR_RANGE_SENSORS_H */
 
