@@ -24,12 +24,15 @@
 
 // 8 MHz oscilator with postscaling
 #pragma config FNOSC = FRCDIV
-// Allow pin 1 to be used
-//#pragma config MCLRE = OFF
+// Allow pin 1 to be used and disable MCLR
+#pragma config MCLRE = OFF
 // Disable pin 8 clock output
 #pragma config OSCIOFNC = OFF
-// Setup for pins 9 and 10
+// Setup for pins 9 and 10 by disabling secondary oscillator peripheral
 #pragma config SOSCSRC = DIG
+// Disable watchdog
+#pragma config FWDTEN = OFF
+#pragma config WINDIS = OFF
 
 int main(void) {
     
