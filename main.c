@@ -24,8 +24,6 @@
 
 // 8 MHz oscilator with postscaling
 #pragma config FNOSC = FRCDIV // 8 MHz
-// Allow pin 1 to be used and disable MCLR
-#pragma config MCLRE = OFF // 0
 // Disable pin 8 clock output
 #pragma config OSCIOFNC = OFF
 // Setup for pins 9 and 10 by disabling secondary oscillator peripheral
@@ -39,7 +37,7 @@ int main(void) {
     set_postscaling();
     initialize_registers();
     config_motors();
-    move_linear_at_velocity(0); 
+    move_linear_at_velocity(0);
     config_qrds();
     config_ir_range_finders();
     configure_servo();
