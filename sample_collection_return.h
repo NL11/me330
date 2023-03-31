@@ -37,9 +37,24 @@ void collect_sample(void) {
     }
     move_linear_to_position(0.5, 0.05, true);
     pivot_to_angle(140, 124, true);  // 90 deg turn clockwise
+    reset_line_follow_errors();
+    return LINE_FOLLOW;
 }
 
-void return_sample(void) {
+unsigned int interations_count = 0;
+enum task_type return_sample(void) {
+    interations_count++;
+    if (interations_count >= 450) {
+        place_sample_in_box();
+        reset_line_follow_errors();
+        interations_count = 0;
+        return LINE_FOLLOW;
+    }
+    line_follow();
+    return SAMPLE_RETURN;
+}
+
+void place_sample_in_box(void) {
     move_linear_at_velocity(0);
     wait(0.15);
     

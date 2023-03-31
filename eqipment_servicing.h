@@ -15,7 +15,7 @@
 #include "robot_motion.h"
 #include "servo.h"
 
-void service_equipment(void) {
+enum task_type service_equipment(void) {
     move_linear_at_velocity(0.30);
     wait(0.05);
     move_linear_at_velocity(0);
@@ -35,6 +35,8 @@ void service_equipment(void) {
     }
     move_linear_to_position(0.5, 0.05, true);
     pivot_to_angle(140, 124, true);  // 90 deg turn clockwise
+    reset_line_follow_errors();
+    return LINE_FOLLOW;
 }
 
 #endif	/* EQUIPMENT_SERVICING_H */

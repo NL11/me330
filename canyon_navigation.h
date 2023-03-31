@@ -33,6 +33,7 @@ enum task_type navigate_canyon(void) {
         else {
             pivot_to_angle(140, 104, true);
         }
+        reset_line_follow_errors();
         return LINE_FOLLOW;
     }
     return CANYON_NAVIGATION;

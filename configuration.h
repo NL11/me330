@@ -77,7 +77,7 @@ void set_postscaling(void) {
 #define satallite_ir_sensor _RA4 // Pin 10
 #define equipment_servicing_ir_sensor _RB12 // Pin 15
     
-enum task_type {TEST, IDLE, STARTUP, LINE_FOLLOW, SAMPLE_COLLECTION, SAMPLE_RETURN, CANYON_NAVIGATION, EQUIPMENT_SERVICING, DATA_TRANSMISSION};
+enum task_type {TEST, IDLE, LEAVE_LANDER, LINE_FOLLOW, SAMPLE_COLLECTION, SAMPLE_RETURN, CANYON_NAVIGATION, EQUIPMENT_SERVICING, RETURN_TO_LANDER, DATA_TRANSMISSION};
     
 // All pin registers are set to output, digital, and off by default
 void initialize_registers() {

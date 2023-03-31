@@ -19,7 +19,7 @@
 #define door_max_angle 130
 #define offset_to_center_of_ir_beam 15
 
-void transmit_to_satilite(void) {
+enum task_type transmit_to_satilite(void) {
     int door_angle = door_starting_angle;
     while(door_angle <= door_max_angle && !check_satallite_laser()) {
         set_door_servo(door_angle);
@@ -29,18 +29,7 @@ void transmit_to_satilite(void) {
     set_door_servo(door_angle + offset_to_center_of_ir_beam);
     wait(0.1);
     laser_on();
-}
-
-void transmit_to_satilite_milestone(void) {
-    int door_angle = door_max_angle+30;
-    while(door_angle >= door_starting_angle && !check_satallite_laser()) {
-        set_door_servo(door_angle);
-        door_angle -= 1;
-        wait(0.04);
-    }
-    set_door_servo(door_angle - offset_to_center_of_ir_beam);
-    wait(0.1);
-    laser_on();
+    return IDLE;
 }
 
 #endif	/* SATILLITE_TRANSMISSION_H */
