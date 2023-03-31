@@ -36,7 +36,7 @@ void collect_sample(void) {
         Nop();
     }
     move_linear_to_position(0.5, 0.05, true);
-    pivot_to_angle(120, 124, true);  // 90 deg turn clockwise
+    pivot_to_angle(140, 124, true);  // 90 deg turn clockwise
 }
 
 void return_sample(void) {
@@ -55,7 +55,7 @@ void return_sample(void) {
         wait(0.35);
         set_door_servo(165); // open
         wait(0.5);
-        set_door_servo(40); // closed
+        set_door_servo(50); // closed
         
         move_linear_at_velocity(0.35);
         while (read_right_qrd() <= QRD_THRESHOLD) {
@@ -67,17 +67,17 @@ void return_sample(void) {
         pivot_to_angle(-150, -50, true);
     }
     else {
-        pivot_to_angle(-150, -50, true);  // 45 deg turn counterclockwise
+        pivot_to_angle(-150, -60, true);  // 45 deg turn counterclockwise
         
         move_linear_at_velocity(0);
         wait(0.15);
         move_linear_at_velocity(-0.40);
-        wait(0.55);
+        wait(0.50);
         move_linear_at_velocity(0);
         wait(0.35);
         set_door_servo(165); // open
         wait(0.5);
-        set_door_servo(40); // closed
+        set_door_servo(50); // closed
         
         move_linear_at_velocity(0.35);
         while (read_left_qrd() <= QRD_THRESHOLD) {
@@ -86,7 +86,7 @@ void return_sample(void) {
         
         move_linear_at_velocity(0.40);
         wait(0.25);
-        pivot_to_angle(150, 50, true);
+        pivot_to_angle(150, 60, true);
     }
 }
 

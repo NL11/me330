@@ -21,14 +21,14 @@
 #define LEFT_QRD_WEIGHT 1.0
 #define AVERAGE_WEIGHT 2.0
 
-#define BASE_DEFAULT_SPEED 125
+#define BASE_DEFAULT_SPEED 120
 
 #define DEAD_ZONE_MAX 0.000 // 0.005
 
 // PID tuning for controlled zone
-#define Kp_controlled 425.0
+#define Kp_controlled 340.0
 #define Ki_controlled 0.0
-#define Kd_controlled 165.0
+#define Kd_controlled 160.0
 
 static double current_error = 0;
 static double error_integral = 0;

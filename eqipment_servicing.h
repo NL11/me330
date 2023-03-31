@@ -17,11 +17,9 @@
 
 void service_equipment(void) {
     move_linear_at_velocity(0.30);
-    wait(0.10);
-    move_linear_at_velocity(0.10);
-    wait(0.10);
+    wait(0.05);
     move_linear_at_velocity(0);
-    wait(0.10);
+    wait(0.5);
     
     move_linear_at_velocity(0.35);
     wait(0.1);
@@ -36,7 +34,7 @@ void service_equipment(void) {
         Nop();
     }
     move_linear_to_position(0.5, 0.05, true);
-    pivot_to_angle(120, 124, true);  // 90 deg turn clockwise
+    pivot_to_angle(140, 124, true);  // 90 deg turn clockwise
 }
 
 #endif	/* EQUIPMENT_SERVICING_H */

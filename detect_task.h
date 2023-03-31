@@ -14,18 +14,20 @@
 #include "read_qrd.h"
 #include "robot_motion.h"
 #include "read_ir_range_sensors.h"
+#include "set_laser.h"
+
+static int tasks_completed = 0;
 
 // Weights of sensors
-#define MIN_READINGS_FOR_TASK_LINE_DETECTED 5 // readings
-#define MAX_READINGS_FOR_TASK_DETECTED 135 // readings
-#define EXTRA_WAIT_TIME_FOR_SAMPLE_RETURN 3.1
+#define MIN_READINGS_FOR_TASK_LINE_DETECTED 10 // readings
+#define MAX_READINGS_FOR_TASK_DETECTED 80 // readings
 
 static int num_readings_black = 0;
 static int num_readings_white = 0;
 static int num_lines_detected = 0;
 static bool task_line_already_detected = false;
 static bool task_line_detection_started = false;
-// Get current task type
+
 enum task_type detect_task_lines() {
     if (read_task_qrd() == black) {
         num_readings_black++;
@@ -39,7 +41,7 @@ enum task_type detect_task_lines() {
     if (num_readings_black >= MIN_READINGS_FOR_TASK_LINE_DETECTED) {
         task_line_detection_started = true;
     }
-    if (num_readings_white >= MIN_READINGS_FOR_TASK_LINE_DETECTED) {
+    else if (num_readings_white >= MIN_READINGS_FOR_TASK_LINE_DETECTED) {
         task_line_already_detected = false;
     }
     
@@ -48,47 +50,30 @@ enum task_type detect_task_lines() {
             num_lines_detected++;
             task_line_already_detected = true;
         }
-        if (num_lines_detected != 3 && num_readings_white >= MAX_READINGS_FOR_TASK_DETECTED) {
+        if (num_readings_white >= MAX_READINGS_FOR_TASK_DETECTED) {
             task_line_detection_started = false;
             task_line_already_detected = false;
+            int num_lines_detected_temp = num_lines_detected;
             num_readings_black = 0;
             num_readings_white = 0;
             num_lines_detected = 0;
-            switch(num_lines_detected){
+            switch(num_lines_detected_temp){
                 case (1):
-                    return DATA_TRANSMISSION;
-                    break;
-                case (2):
-                    return SAMPLE_COLLECTION;
-                    break;
-                case (3):
-                    return SAMPLE_RETURN;
-                    break;
-                case(4):
-                    return CANYON_NAVIGATION;
-                    break;
-                default:
+                    if (tasks_completed == 4) {
+                        return DATA_TRANSMISSION;
+                    }
                     return LINE_FOLLOW;
                     break;
-            }
-        }
-        else if (num_lines_detected == 3 && num_readings_white >= MAX_READINGS_FOR_TASK_DETECTED*EXTRA_WAIT_TIME_FOR_SAMPLE_RETURN) {
-            task_line_detection_started = false;
-            task_line_already_detected = false;
-            num_readings_black = 0;
-            num_readings_white = 0;
-            num_lines_detected = 0;
-            switch(num_lines_detected){
-                case (1):
-                    return DATA_TRANSMISSION;
-                    break;
                 case (2):
+                    tasks_completed++;
                     return SAMPLE_COLLECTION;
                     break;
                 case (3):
+                    tasks_completed++;
                     return SAMPLE_RETURN;
                     break;
                 case(4):
+                    tasks_completed++;
                     return CANYON_NAVIGATION;
                     break;
                 default:
@@ -101,20 +86,15 @@ enum task_type detect_task_lines() {
     return LINE_FOLLOW;
 }
 
-
-enum task_type detect_data_transmission(void) {
-    return LINE_FOLLOW;
-}
-
 enum task_type detect_task() {
-    if (check_equipment_servicing()) {
-        return EQUIPMENT_SERVICING;
-    }
     enum task_type new_state = detect_task_lines();
     if (new_state != LINE_FOLLOW) {
         return new_state;
     }
-//    new_state = detect_data_transmission();
+    if (check_equipment_servicing()) {
+        tasks_completed++;
+        return EQUIPMENT_SERVICING;
+    }
     return new_state;
 }
 

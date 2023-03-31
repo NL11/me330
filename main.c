@@ -21,6 +21,7 @@
 #include "set_laser.h"
 #include "satillite_transmission.h"
 #include "eqipment_servicing.h"
+#include "leave_lander.h"
 
 // 8 MHz oscilator with postscaling
 #pragma config FNOSC = FRCDIV // 8 MHz
@@ -41,10 +42,10 @@ int main(void) {
     config_qrds();
     config_ir_range_finders();
     configure_servo();
-    set_door_servo(40);
+    set_door_servo(50);
     config_laser();
     // Set initial task here!
-    enum task_type current_task = LINE_FOLLOW;
+    enum task_type current_task = STARTUP;
     // Wait for 2 seconds before starting to allow the base to turn on 
     // properly and allow the user to move away from the base after turning on
     wait(2); 
@@ -58,9 +59,7 @@ int main(void) {
             case(IDLE):
                 break;
             case (STARTUP):
-                // Code to move to line then turn to start motion
-                move_linear_to_position(0.5, 0.4, true); // Two tiles
-                pivot_to_angle(180, -105, true);  // 90 deg turn counterclockwise
+                leave_lander();
                 current_task = LINE_FOLLOW;
                 break;
             case (LINE_FOLLOW):
@@ -73,29 +72,40 @@ int main(void) {
                 reset_line_follow_errors();
                 break;
             case (SAMPLE_RETURN):
-                return_sample();
-                current_task = LINE_FOLLOW;
-                reset_line_follow_errors();
+                interations_count++;
+                if (interations_count >= 450) {
+                    return_sample();
+                    reset_line_follow_errors();
+                    interations_count = 0;
+                    current_task = LINE_FOLLOW;
+                }
+                else {
+                    line_follow();
+                }
                 break;
             case (CANYON_NAVIGATION):
                 current_task = navigate_canyon();
                 reset_line_follow_errors();
                 break;
             case(EQUIPMENT_SERVICING):
-                laser_on();
                 service_equipment();
-                laser_off();
                 current_task = LINE_FOLLOW;
                 reset_line_follow_errors();
                 break;
             case(DATA_TRANSMISSION):
+                if (interations_count == 0) {
+                    move_linear_at_velocity(-0.50);
+                    wait(0.25);
+                    pivot_to_angle(-140, -104, true);  // 90 deg turn clockwise
+                }
                 interations_count++;
-                if (interations_count >= 5000) {
+                if (interations_count >= 2300) {
                     move_linear_at_velocity(0);
                     transmit_to_satilite();
+                    interations_count = 0;
                     current_task = IDLE;
                 }
-                else if (interations_count >= 400) {
+                else if (interations_count >= 700) {
                     move_linear_at_velocity(0.40);
                 }
                 else {
@@ -108,7 +118,7 @@ int main(void) {
     }
     
     move_linear_at_velocity(0); 
-    set_door_servo(40);
+    set_door_servo(50);
     
     return 0;
 }
