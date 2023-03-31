@@ -1,6 +1,6 @@
 /*
  * File:   main.c
- * Author: Nathan Ludlow, Solomon Olmstead
+ * Author: Nathan Ludlow, Solomon Olmstead, Bryant Jepsen, Dallin Davis
  *
  * Created on March 2023
  */
