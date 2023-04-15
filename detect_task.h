@@ -84,17 +84,18 @@ enum task_type detect_task_lines() {
     return LINE_FOLLOW;
 }
 
-#define NUM_READINGS_FOR_LANDER_LINE_DETECTED 60
-static int num_lander_line_readings = 0;
+#define NUM_READINGS_FOR_LANDER_LINE_DETECTED 15
+static int num_lander_black_readings = 0;
 
 bool check_lander() {
     if (read_lander_qrd() == black) {
-        num_lander_line_readings++;
+        num_lander_black_readings++;
     }
     else {
-        num_lander_line_readings = 0;
+        num_lander_black_readings = 0;
     }
-    if (num_lander_line_readings >= NUM_READINGS_FOR_LANDER_LINE_DETECTED) {
+    
+    if (num_lander_black_readings >= NUM_READINGS_FOR_LANDER_LINE_DETECTED) {
         return true;
     }
     return false;
@@ -105,11 +106,11 @@ enum task_type detect_task() {
     if (new_state != LINE_FOLLOW) {
         return new_state;
     }
-//    if (check_equipment_servicing()) {
-//        tasks_completed++;
-//        return EQUIPMENT_SERVICING;
-//    }
-    if (check_lander() && tasks_completed >= 3) {
+    if (check_equipment_servicing()) {
+        tasks_completed++;
+        return EQUIPMENT_SERVICING;
+    }
+    if (check_lander() && tasks_completed >= 4) {
         return RETURN_TO_LANDER;
     }
     return new_state;

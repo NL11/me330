@@ -69,6 +69,7 @@ void set_postscaling(void) {
 #define center_qrd ADC1BUF11 // RB13
 #define task_qrd ADC1BUF14 // RBA3
 #define lander_qrd ADC1BUF12 // Pin 15 AN12
+#define enable_right_ir _LATB12 // Pin 15 AN12
 #define forwards_ir_range_sensor _RB7 // pin 11
 #define right_ir_range_sensor _RB8 // pin 12 --> sensor now on the right
 #define servo_pwm_period OC1RS

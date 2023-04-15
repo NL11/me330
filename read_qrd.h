@@ -16,8 +16,9 @@
 #define ALPHA 0
 
 // Used for task detection and ball color detection
-#define QRD_THRESHOLD 2500
+#define QRD_THRESHOLD 2600
 #define TASK_QRD_THRESHOLD 3000
+#define LANDER_QRD_THRESHOLD 1200
 #define BALL_QRD_THRESHOLD 3300
 #define black true
 #define white false
@@ -113,7 +114,7 @@ bool read_task_qrd(void) {
 }
 
 bool read_lander_qrd(void) {
-    if (task_qrd >= TASK_QRD_THRESHOLD) {
+    if (lander_qrd >= LANDER_QRD_THRESHOLD) {
         return black;
     }
     return white;

@@ -49,7 +49,7 @@ int main(void) {
     enum task_type current_task = LEAVE_LANDER; // LEAVE_LANDER
     // Wait for 2 seconds before starting to allow the base to turn on 
     // properly and allow the user to move away from the base after turning on
-    wait(2); 
+    // wait(2); 
     
     while(1){    
         switch(current_task) {

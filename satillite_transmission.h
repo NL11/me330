@@ -15,7 +15,7 @@
 
 #define door_starting_angle 60
 #define door_max_angle 130
-#define offset_to_center_of_ir_beam 0
+#define offset_to_center_of_ir_beam 5
 
 enum task_type transmit_to_satilite(void) {
     int door_angle = door_starting_angle;

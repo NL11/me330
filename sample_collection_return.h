@@ -25,7 +25,7 @@ enum task_type collect_sample(void) {
     
     move_linear_at_velocity(0);
     wait(0.10);
-    pivot_to_angle(-140, -100, true);  // 90 deg turn counterclockwise
+    pivot_to_angle(-140, -97, true);  // 90 deg turn counterclockwise
     move_linear_at_velocity(-0.5);
     wait(0.85);
     move_linear_at_velocity(0.0);
@@ -41,7 +41,6 @@ enum task_type collect_sample(void) {
         Nop();
     }
     pivot_at_angular_velocity(0);
-//    pivot_to_angle(140, 124, true);  // 90 deg turn clockwise
     reset_line_follow_errors();
     return LINE_FOLLOW;
 }
@@ -60,7 +59,7 @@ void place_sample_in_box(void) {
         wait(0.55);
         move_linear_at_velocity(0);
         wait(0.35);
-        set_door_servo(165); // open
+        set_door_servo(170); // open
         wait(0.65);
         set_door_servo(50); // closed
         
@@ -71,7 +70,7 @@ void place_sample_in_box(void) {
         
         move_linear_at_velocity(0.40);
         wait(0.35);
-        pivot_at_angular_velocity(-140);
+        pivot_at_angular_velocity(-160);
         while (read_left_qrd() <= QRD_THRESHOLD) {
             Nop();
         }
@@ -86,7 +85,7 @@ void place_sample_in_box(void) {
         wait(0.55);
         move_linear_at_velocity(0);
         wait(0.35);
-        set_door_servo(165); // open
+        set_door_servo(170); // open
         wait(0.65);
         set_door_servo(50); // closed
         
@@ -97,7 +96,7 @@ void place_sample_in_box(void) {
 //        
         move_linear_at_velocity(0.40);
         wait(0.35);
-        pivot_at_angular_velocity(140);
+        pivot_at_angular_velocity(160);
         while (read_right_qrd() <= QRD_THRESHOLD) {
             Nop();
         }
@@ -108,7 +107,7 @@ void place_sample_in_box(void) {
 static unsigned int return_sample_interations_count = 0;
 enum task_type return_sample(void) {
     return_sample_interations_count++;
-    if (return_sample_interations_count >= 450) {
+    if (return_sample_interations_count >= 430) {
         place_sample_in_box();
         reset_line_follow_errors();
         return_sample_interations_count = 0;

@@ -6,7 +6,6 @@
  */
 
 // File that includes the logic for line following using a PID controller and 
-// Zoning to create non-linearity
 
 #ifndef LINE_FOLLOW_H
 #define	LINE_FOLLOW_H
@@ -21,14 +20,14 @@
 #define LEFT_QRD_WEIGHT 1.0
 #define AVERAGE_WEIGHT 2.0
 
-#define BASE_DEFAULT_SPEED 125
+#define BASE_DEFAULT_SPEED 130 
 
-#define DEAD_ZONE_MAX 0.000 // 0.005
+#define DEAD_ZONE_MAX 0.1 // 0.005
 
 // PID tuning for controlled zone
-#define Kp_controlled 380.0 // 380
-#define Ki_controlled 0.0
-#define Kd_controlled 200.0 // 200
+#define Kp_controlled 425.0 // mid 425 // old 420
+#define Ki_controlled 0.0 // mid 0 // old 35
+#define Kd_controlled 315.0 // mid 315 // old 265
 
 static double current_error = 0;
 static double error_integral = 0;
@@ -63,6 +62,9 @@ double compute_pid(void) {
     }
     double P = current_error;
     double I = error_integral + current_error;
+    if (I > Kp_controlled) {
+        I = Kp_controlled;
+    }
     double D = current_error - last_error;
     return (Kp_controlled*P) + (Ki_controlled*I) + (Kd_controlled*D);
 }
@@ -73,16 +75,7 @@ void line_follow(void) {
     last_error = current_error;
     int left_wheel_speed = BASE_DEFAULT_SPEED;
     int right_wheel_speed = BASE_DEFAULT_SPEED;
-    // FIXME This code is new and needs to be tested (next two if statements)
-    if (!on_line && pid_value > 0) {
-        left_wheel_speed = left_wheel_speed;
-        right_wheel_speed = 0;
-    }
-    else if (!on_line && pid_value < 0) {
-        left_wheel_speed = 0;
-        right_wheel_speed = right_wheel_speed;
-    }
-    else if (pid_value > 0) {
+    if (pid_value > 0) {
         left_wheel_speed = left_wheel_speed;
         right_wheel_speed = right_wheel_speed - (int)(pid_value);
     }
