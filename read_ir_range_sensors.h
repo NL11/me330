@@ -16,7 +16,7 @@ void config_ir_range_finders(void) {
     _TRISB8 = 1;    // pin 12
     _TRISB7 = 1;    // pin 11
     _TRISA4 = 1;    // pin 10
-    _TRISB12 = 1;    // pin 15
+//    _TRISB12 = 1;    // pin 15 --> Taken for Left Task QRD
 }
 
 bool check_forwards_obstacle(void) {
@@ -26,8 +26,15 @@ bool check_forwards_obstacle(void) {
     return false;
 }
 
-bool check_left_obstacle(void) {
-    if (left_ir_range_sensor == 1) {
+//bool check_left_obstacle(void) {
+//    if (left_ir_range_sensor == 1) {
+//        return true;
+//    }
+//    return false;
+//}
+
+bool check_right_obstacle(void) {
+    if (right_ir_range_sensor == 1) { //left_ir_range_sensor moved to the Right side on 4/14/2023  
         return true;
     }
     return false;

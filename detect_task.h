@@ -19,8 +19,9 @@
 static int tasks_completed = 0;
 
 // Weights of sensors
-#define MIN_READINGS_FOR_TASK_LINE_DETECTED 10 // readings
-#define MAX_READINGS_FOR_TASK_DETECTED 80 // readings
+#define MIN_READINGS_FOR_TASK_LINE_DETECTED 7 // readings 9
+#define MIN_READINGS_FOR_WHITE_BREAK_DETECTED 4 // readings 3
+#define MAX_READINGS_FOR_TASK_DETECTED 90 // readings 90
 
 static int num_readings_black = 0;
 static int num_readings_white = 0;
@@ -41,7 +42,7 @@ enum task_type detect_task_lines() {
     if (num_readings_black >= MIN_READINGS_FOR_TASK_LINE_DETECTED) {
         task_line_detection_started = true;
     }
-    else if (num_readings_white >= MIN_READINGS_FOR_TASK_LINE_DETECTED) {
+    else if (num_readings_white >= MIN_READINGS_FOR_WHITE_BREAK_DETECTED) {
         task_line_already_detected = false;
     }
     
@@ -59,9 +60,6 @@ enum task_type detect_task_lines() {
             num_lines_detected = 0;
             switch(num_lines_detected_temp){
                 case (1):
-                    if (tasks_completed == 4) {
-                        return DATA_TRANSMISSION;
-                    }
                     return LINE_FOLLOW;
                     break;
                 case (2):
@@ -86,14 +84,33 @@ enum task_type detect_task_lines() {
     return LINE_FOLLOW;
 }
 
+#define NUM_READINGS_FOR_LANDER_LINE_DETECTED 60
+static int num_lander_line_readings = 0;
+
+bool check_lander() {
+    if (read_lander_qrd() == black) {
+        num_lander_line_readings++;
+    }
+    else {
+        num_lander_line_readings = 0;
+    }
+    if (num_lander_line_readings >= NUM_READINGS_FOR_LANDER_LINE_DETECTED) {
+        return true;
+    }
+    return false;
+}
+
 enum task_type detect_task() {
     enum task_type new_state = detect_task_lines();
     if (new_state != LINE_FOLLOW) {
         return new_state;
     }
-    if (check_equipment_servicing()) {
-        tasks_completed++;
-        return EQUIPMENT_SERVICING;
+//    if (check_equipment_servicing()) {
+//        tasks_completed++;
+//        return EQUIPMENT_SERVICING;
+//    }
+    if (check_lander() && tasks_completed >= 3) {
+        return RETURN_TO_LANDER;
     }
     return new_state;
 }

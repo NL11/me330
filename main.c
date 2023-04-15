@@ -1,3 +1,4 @@
+
 /*
  * File:   main.c
  * Author: Nathan Ludlow, Solomon Olmstead, Bryant Jepsen, Dallin Davis
@@ -45,7 +46,7 @@ int main(void) {
     set_door_servo(50);
     config_laser();
     // Set initial task here!
-    enum task_type current_task = LEAVE_LANDER;
+    enum task_type current_task = LEAVE_LANDER; // LEAVE_LANDER
     // Wait for 2 seconds before starting to allow the base to turn on 
     // properly and allow the user to move away from the base after turning on
     wait(2); 

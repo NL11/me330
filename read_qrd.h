@@ -13,11 +13,12 @@
 #include "configuration.h"
     
 // Used for line following
-#define ALPHA 0.2
+#define ALPHA 0
 
 // Used for task detection and ball color detection
-#define QRD_THRESHOLD 3000
-#define BALL_QRD_THRESHOLD 3500
+#define QRD_THRESHOLD 2500
+#define TASK_QRD_THRESHOLD 3000
+#define BALL_QRD_THRESHOLD 3300
 #define black true
 #define white false
 #define RIGHT_QRD_VALUE_OFFSET -485
@@ -37,9 +38,16 @@ void config_qrds(void) {
     _TRISA3 = 1;    // pin 8 AN14
     _ANSA3 = 1;     // pin 8 AN14
     
+    _TRISB12 = 1;    // pin 15 AN12
+    _ANSB12 = 1; //pin 15 AN12
+    
     // Ball QRD
     _TRISB4 = 1;    // pin 8 AN14
     _ANSB4 = 1;     // pin 8 AN14
+    
+    // Lander QRD
+    _TRISB12 = 1;
+    _ANSB12 = 1;
     
     enable_ad_auto_sample = 0;    // Disable A/D module during configuration
     
@@ -54,7 +62,7 @@ void config_qrds(void) {
     _NVCFG = 0;   // use VSS as negative reference
     _BUFREGEN = 1;// store results in buffer corresponding to channel number
     _CSCNA = 1;   // scanning mode
-    _SMPI = 4;    // begin new sampling sequence after every sample
+    _SMPI = 5;    // begin new sampling sequence after every sample
     // number of pins you are sampling since this determines that the buffer 
     // Resets its scan after N-1 number of pins scanned
     _ALTS = 0;    // sample MUXA only
@@ -68,8 +76,10 @@ void config_qrds(void) {
     _CSS9 = 1; // AN9
     _CSS10 = 1; // AN10
     _CSS11 = 1; // AN11
+    _CSS12 = 1; // AN12, Pin 15
     _CSS14 = 1; // AN14
     _CSS15 = 1; // AN15
+    
 
     enable_ad_auto_sample = 1;    // enable module
 }
@@ -96,7 +106,14 @@ int read_left_qrd(void) {
 }
 
 bool read_task_qrd(void) {
-    if (task_qrd >= QRD_THRESHOLD) {
+    if (task_qrd >= TASK_QRD_THRESHOLD) {
+        return black;
+    }
+    return white;
+}
+
+bool read_lander_qrd(void) {
+    if (task_qrd >= TASK_QRD_THRESHOLD) {
         return black;
     }
     return white;

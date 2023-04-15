@@ -68,14 +68,16 @@ void set_postscaling(void) {
 #define left_qrd ADC1BUF9 // RB15
 #define center_qrd ADC1BUF11 // RB13
 #define task_qrd ADC1BUF14 // RBA3
+#define lander_qrd ADC1BUF12 // Pin 15 AN12
 #define forwards_ir_range_sensor _RB7 // pin 11
-#define left_ir_range_sensor _RB8 // pin 12
+#define right_ir_range_sensor _RB8 // pin 12 --> sensor now on the right
 #define servo_pwm_period OC1RS
 #define servo_pwm_duty_cycle OC1R
 #define ball_qrd ADC1BUF15 // RB4
 #define laser _LATB9 // Pin 13
 #define satallite_ir_sensor _RA4 // Pin 10
-#define equipment_servicing_ir_sensor _RB12 // Pin 15
+//#define equipment_servicing_ir_sensor _RB12 // Pin 15
+#define equipment_servicing_ir_sensor _RB8 // Pin 12 --> combined with left IR
     
 enum task_type {TEST, IDLE, LEAVE_LANDER, LINE_FOLLOW, SAMPLE_COLLECTION, SAMPLE_RETURN, CANYON_NAVIGATION, EQUIPMENT_SERVICING, RETURN_TO_LANDER, DATA_TRANSMISSION};
     

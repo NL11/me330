@@ -21,18 +21,19 @@
 #define LEFT_QRD_WEIGHT 1.0
 #define AVERAGE_WEIGHT 2.0
 
-#define BASE_DEFAULT_SPEED 120
+#define BASE_DEFAULT_SPEED 125
 
 #define DEAD_ZONE_MAX 0.000 // 0.005
 
 // PID tuning for controlled zone
-#define Kp_controlled 340.0
+#define Kp_controlled 380.0 // 380
 #define Ki_controlled 0.0
-#define Kd_controlled 160.0
+#define Kd_controlled 200.0 // 200
 
 static double current_error = 0;
 static double error_integral = 0;
 static double last_error = 0;
+static bool on_line = true;
 void reset_line_follow_errors() {
     current_error = 0;
     error_integral = 0;
@@ -45,9 +46,11 @@ void update_error(void) {
     int center_qrd_value = read_center_qrd();
     int left_qrd_value = read_left_qrd();
     if (right_qrd_value <= QRD_THRESHOLD && center_qrd_value <= QRD_THRESHOLD && left_qrd_value <= QRD_THRESHOLD) {
+        on_line = false;
         current_error = last_error;
     }
     else {
+        on_line = true;
         current_error = (right_qrd_value*RIGHT_QRD_WEIGHT + center_qrd_value*CENTER_QRD_WEIGHT + left_qrd_value*LEFT_QRD_WEIGHT) /
             ((double)(right_qrd_value + center_qrd_value + left_qrd_value));
         current_error = current_error - AVERAGE_WEIGHT;
@@ -70,7 +73,16 @@ void line_follow(void) {
     last_error = current_error;
     int left_wheel_speed = BASE_DEFAULT_SPEED;
     int right_wheel_speed = BASE_DEFAULT_SPEED;
-    if (pid_value > 0) {
+    // FIXME This code is new and needs to be tested (next two if statements)
+    if (!on_line && pid_value > 0) {
+        left_wheel_speed = left_wheel_speed;
+        right_wheel_speed = 0;
+    }
+    else if (!on_line && pid_value < 0) {
+        left_wheel_speed = 0;
+        right_wheel_speed = right_wheel_speed;
+    }
+    else if (pid_value > 0) {
         left_wheel_speed = left_wheel_speed;
         right_wheel_speed = right_wheel_speed - (int)(pid_value);
     }
